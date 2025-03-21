@@ -16,9 +16,31 @@ interface Tech {
 }
 
 export default function Home() {
-  const targetDate = new Date("2025-04-20T23:59:59");
+  // Fix localStorage issue with server-side rendering
+  const [targetDate] = useState(() => {
+    // Only access localStorage on the client side
+    if (typeof window !== 'undefined') {
+      // Try to get saved date from localStorage
+      const saved = localStorage.getItem('countdownTargetDate');
+      if (saved) {
+        return new Date(saved);
+      } else {
+        // Create a new target date if none exists
+        const newTarget = new Date();
+        newTarget.setDate(newTarget.getDate() + 21);
+        localStorage.setItem('countdownTargetDate', newTarget.toString());
+        return newTarget;
+      }
+    }
+    
+    // Default fallback for server-side rendering
+    const defaultDate = new Date();
+    defaultDate.setDate(defaultDate.getDate() + 21);
+    return defaultDate;
+  });
+  
   const [timeLeft, setTimeLeft] = useState({
-    days: 0,
+    days: 21, // Initialize with 21 days
     hours: 0,
     minutes: 0,
     seconds: 0,
@@ -210,12 +232,9 @@ export default function Home() {
                   className="flex flex-col items-center"
                 >
                   <div className="bg-zinc-900/80 rounded-lg p-3 w-full shadow-lg border border-zinc-800">
-                    <motion.div 
-                      className="text-2xl font-bold text-white text-center"
-                      key={block.value}
-                    >
+                    <div className="text-2xl font-bold text-white text-center">
                       {String(block.value).padStart(2, '0')}
-                    </motion.div>
+                    </div>
                   </div>
                   <div className="text-xs mt-2 text-zinc-500 font-medium">
                     {block.label}
