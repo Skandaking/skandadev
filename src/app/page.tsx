@@ -64,7 +64,7 @@ export default function Home() {
 
   const timeBlocks = [
     { value: timeLeft.days, label: "Days" },
-    { value: timeLeft.hours, label: "Hours" },
+    { value: timeLeft.hours, label: "Hrs" },
     { value: timeLeft.minutes, label: "Min" },
     { value: timeLeft.seconds, label: "Sec" }
   ];
@@ -72,10 +72,10 @@ export default function Home() {
   // Loading screen
   if (isLoading) {
     return (
-      <div className="h-screen w-screen flex items-center justify-center bg-slate-900">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-16 h-16 rounded-full border-4 border-indigo-500 border-t-transparent animate-spin"></div>
-          <p className="text-indigo-400 text-sm font-medium animate-pulse">Loading experience...</p>
+      <div className="h-screen w-screen flex items-center justify-center bg-zinc-900">
+        <div className="flex flex-col items-center gap-2">
+          <div className="w-10 h-10 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin"></div>
+          <p className="text-indigo-400 text-xs font-medium animate-pulse">Loading...</p>
         </div>
       </div>
     );
@@ -83,151 +83,157 @@ export default function Home() {
   
   return (
     <div 
-      className="min-h-screen w-screen flex items-center justify-center relative overflow-hidden bg-cover bg-center bg-no-repeat" 
+      className="h-screen w-screen flex items-center justify-center relative overflow-hidden bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/bg.jpg')" }}
     >
-      {/* Adding a more subtle gradient overlay that complements code editor colors */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900/70 via-slate-800/60 to-slate-900/80 backdrop-blur-sm z-0"></div>
+      {/* Simple gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-zinc-900/90 to-zinc-900/80 backdrop-blur-sm z-0"></div>
       
-      <div className="relative z-10 w-full max-w-xl px-6 py-12">
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, ease: "easeOut" }}
-          className="text-center mb-10"
-        >
-          <div className="flex justify-center mb-4">
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ 
-                duration: 0.7,
-                type: "spring",
-                stiffness: 100
-              }}
-            >
-              <Code className="h-12 w-12 text-indigo-400 p-2 rounded-xl bg-slate-800/80 shadow-lg border border-slate-700" />
-            </motion.div>
-          </div>
-          <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">Developer Portfolio</h1>
-          <p className="text-indigo-300 text-lg font-medium">Crafting digital experiences soon</p>
-        </motion.div>
-        
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.2, ease: "easeOut" }}
-          className="bg-slate-800/60 backdrop-blur-md rounded-2xl p-8 mb-10 shadow-2xl border border-slate-700/70"
-        >
-          <div className="grid grid-cols-4 gap-4 w-full mb-8">
-            {timeBlocks.map((block, index) => (
-              <motion.div 
-                key={block.label}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ 
-                  delay: 0.4 + index * 0.1,
-                  type: "spring",
-                  stiffness: 100 
-                }}
-                className="flex flex-col items-center"
-                whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              >
-                <div className="bg-gradient-to-br from-indigo-600 to-indigo-900 rounded-xl p-3 w-full shadow-lg border border-indigo-500/70 hover:shadow-indigo-500/20 transition-all duration-300">
-                  <motion.div 
-                    className="text-2xl font-bold text-white text-center"
-                    key={block.value} // This forces re-animation when value changes
-                    initial={{ opacity: 0.5, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    {String(block.value).padStart(2, '0')}
-                  </motion.div>
-                </div>
-                <div className="text-xs uppercase mt-3 text-indigo-300 font-semibold tracking-wider">
-                  {block.label}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-          
-          {!submitted ? (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-              className="space-y-4"
-            >
-              <p className="text-slate-300 text-sm mb-3 text-center">
-                Be the first to know when my portfolio launches
-              </p>
-              <form onSubmit={handleSubmit} className="flex gap-2">
-                <Input
-                  type="email"
-                  placeholder="your@email.com"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="bg-slate-700/80 border-slate-600 text-slate-100 placeholder:text-slate-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all duration-300 rounded-lg"
-                />
-                <Button 
-                  type="submit" 
-                  disabled={isSubmitting}
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-5 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/20"
-                >
-                  {isSubmitting ? (
-                    <motion.div 
-                      animate={{ rotate: 360 }}
-                      transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                      className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
-                    />
-                  ) : "Notify Me"}
-                </Button>
-              </form>
-            </motion.div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="text-center py-3 px-4 bg-emerald-500/20 border border-emerald-500/30 rounded-lg text-emerald-300"
-            >
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 200, damping: 10 }}
-                className="mb-2 flex justify-center"
-              >
-                <svg className="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </motion.div>
-              Thanks! You&apos;ll be notified when the portfolio launches.
-            </motion.div>
-          )}
-        </motion.div>
-        
+      <div className="relative z-10 w-full max-w-4xl px-4 flex flex-col h-screen">
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-          className="flex justify-center gap-4"
+          transition={{ duration: 0.5 }}
+          className="flex items-center justify-between pt-4"
         >
-          <motion.div whileHover={{ y: -5, scale: 1.1 }} transition={{ duration: 0.2 }}>
-            <Button variant="ghost" size="sm" className="rounded-full w-11 h-11 p-0 text-slate-300 hover:text-white hover:bg-indigo-600/80 transition-all duration-300 border border-slate-700/50">
-              <Mail className="h-5 w-5" />
-            </Button>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 bg-indigo-600 rounded-md flex items-center justify-center">
+              <Code className="h-4 w-4 text-white" />
+            </div>
+            <span className="text-white font-medium text-sm">SkandaDev</span>
+          </div>
+          
+          <div className="flex items-center gap-3">
+            {[
+              { icon: <Mail className="h-4 w-4" /> },
+              { icon: <Github className="h-4 w-4" /> },
+              { icon: <Linkedin className="h-4 w-4" /> }
+            ].map((item, index) => (
+              <Button 
+                key={index}
+                variant="ghost" 
+                size="sm"
+                className="w-8 h-8 p-0 rounded-full bg-zinc-800/50 text-zinc-400 hover:text-white hover:bg-indigo-600/20 border border-zinc-700"
+              >
+                {item.icon}
+              </Button>
+            ))}
+          </div>
+        </motion.div>
+        
+        <div className="flex-1 flex flex-col items-center justify-center">
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-8"
+          >
+            <h2 className="text-sm font-medium text-indigo-400 mb-1">Full Stack Developer</h2>
+            <h1 className="text-3xl font-bold text-white mb-2">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-blue-400">
+                Portfolio Coming Soon
+              </span>
+            </h1>
+            <p className="text-zinc-400 text-sm max-w-md mx-auto">
+              Crafting digital experiences with modern web technologies
+            </p>
           </motion.div>
-          <motion.div whileHover={{ y: -5, scale: 1.1 }} transition={{ duration: 0.2 }}>
-            <Button variant="ghost" size="sm" className="rounded-full w-11 h-11 p-0 text-slate-300 hover:text-white hover:bg-indigo-600/80 transition-all duration-300 border border-slate-700/50">
-              <Github className="h-5 w-5" />
-            </Button>
+          
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="bg-zinc-800/30 backdrop-blur-sm rounded-xl p-6 mb-6 border border-zinc-700/50 w-full max-w-xl"
+          >
+            <h3 className="text-lg font-medium text-white mb-4 text-center">Launch Countdown</h3>
+            
+            <div className="grid grid-cols-4 gap-3 w-full mb-6">
+              {timeBlocks.map((block, index) => (
+                <motion.div 
+                  key={block.label}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 + index * 0.1 }}
+                  className="flex flex-col items-center"
+                >
+                  <div className="bg-zinc-900/80 rounded-lg p-3 w-full shadow-lg border border-zinc-800">
+                    <motion.div 
+                      className="text-2xl font-bold text-white text-center"
+                      key={block.value}
+                    >
+                      {String(block.value).padStart(2, '0')}
+                    </motion.div>
+                  </div>
+                  <div className="text-xs mt-2 text-zinc-500 font-medium">
+                    {block.label}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+            
+            {!submitted ? (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+              >
+                <form onSubmit={handleSubmit} className="flex gap-2">
+                  <Input
+                    type="email"
+                    placeholder="your@email.com"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="bg-zinc-900/50 border-zinc-700 text-white placeholder:text-zinc-600 focus:border-indigo-500 text-sm h-9"
+                  />
+                  <Button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    className="bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-4 text-sm h-9 whitespace-nowrap"
+                  >
+                    {isSubmitting ? (
+                      <motion.div 
+                        animate={{ rotate: 360 }}
+                        transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                        className="w-4 h-4 border-2 border-white border-t-transparent rounded-full"
+                      />
+                    ) : "Notify Me"}
+                  </Button>
+                </form>
+              </motion.div>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
+                className="text-center py-2 px-4 bg-green-500/10 border border-green-500/30 rounded-lg"
+              >
+                <p className="text-sm text-green-400">Thank you! I'll notify you when the portfolio launches.</p>
+              </motion.div>
+            )}
           </motion.div>
-          <motion.div whileHover={{ y: -5, scale: 1.1 }} transition={{ duration: 0.2 }}>
-            <Button variant="ghost" size="sm" className="rounded-full w-11 h-11 p-0 text-slate-300 hover:text-white hover:bg-indigo-600/80 transition-all duration-300 border border-slate-700/50">
-              <Linkedin className="h-5 w-5" />
-            </Button>
+          
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="flex flex-wrap justify-center gap-2 max-w-md"
+          >
+            {["React", "Next.js", "TypeScript", "Tailwind"].map((tech) => (
+              <span key={tech} className="px-3 py-1 rounded-full text-xs bg-zinc-800/50 text-zinc-400 border border-zinc-700/50">
+                {tech}
+              </span>
+            ))}
           </motion.div>
+        </div>
+        
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.6 }}
+          className="text-center py-4 text-zinc-600 text-xs"
+        >
+          © 2025 | Developer Portfolio
         </motion.div>
       </div>
     </div>
