@@ -5,6 +5,15 @@ import { Code, Mail, Github, Linkedin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
+import Image from "next/image";
+
+// Define Tech type to fix TypeScript errors
+interface Tech {
+  name: string;
+  icon: string;
+  color: string;
+  missing?: boolean;
+}
 
 export default function Home() {
   const targetDate = new Date("2025-04-20T23:59:59");
@@ -18,6 +27,47 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  // All technologies grouped by category
+  const technologies: Record<string, Tech[]> = {
+    "Programming Languages": [
+      { name: "C#", icon: "/icons/csharp.svg", color: "#68217A", missing: true },
+      { name: "Dart", icon: "/icons/dart.svg", color: "#0175C2" },
+      { name: "Visual Basic", icon: "/icons/visualbasic.svg", color: "#2C5898", missing: true },
+      { name: "PHP", icon: "/icons/php.svg", color: "#777BB3" },
+      { name: "Python", icon: "/icons/python.svg", color: "#3776AB" },
+      { name: "JavaScript", icon: "/icons/javascript.svg", color: "#F7DF1E" },
+      { name: "TypeScript", icon: "/icons/typescript.svg", color: "#3178C6" }
+    ],
+    "Web Technologies": [
+      { name: "HTML", icon: "/icons/html5.svg", color: "#E34F26" },
+      { name: "CSS", icon: "/icons/css3.svg", color: "#1572B6" },
+      { name: "React", icon: "/icons/react.svg", color: "#61DAFB" },
+      { name: "Next.js", icon: "/icons/nextjs.svg", color: "#ffffff" },
+      { name: "WordPress", icon: "/icons/wordpress.svg", color: "#21759B" },
+      { name: "Wix", icon: "/icons/wix.svg", color: "#FAAD4D" },
+      { name: "SharePoint", icon: "/icons/sharepoint.svg", color: "#0078D4", missing: true },
+      { name: "Webflow", icon: "/icons/webflow.svg", color: "#4353FF" },
+      { name: "Tailwind CSS", icon: "/icons/tailwindcss.svg", color: "#06B6D4" }
+    ],
+    "Database": [
+      { name: "Oracle", icon: "/icons/oracle.svg", color: "#F80000", missing: true },
+      { name: "MySQL", icon: "/icons/mysql.svg", color: "#4479A1" },
+      { name: "Firebase", icon: "/icons/firebase.svg", color: "#FFCA28" },
+      { name: "Supabase", icon: "/icons/supabase.svg", color: "#3ECF8E" },
+      { name: "PostgreSQL", icon: "/icons/postgresql.svg", color: "#4169E1" }
+    ],
+    "Version Control": [
+      { name: "Git", icon: "/icons/git.svg", color: "#F05032" }
+    ],
+    "Prototype": [
+      { name: "Axure RP", icon: "/icons/axure.svg", color: "#FF6E00", missing: true },
+      { name: "Figma", icon: "/icons/figma.svg", color: "#F24E1E" }
+    ]
+  };
+
+  // Flatten the technologies for animation
+  const allTechnologies = Object.values(technologies).flat();
 
   useEffect(() => {
     // Simulate a short loading time
@@ -105,17 +155,20 @@ export default function Home() {
           
           <div className="flex items-center gap-3">
             {[
-              { icon: <Mail className="h-4 w-4" /> },
-              { icon: <Github className="h-4 w-4" /> },
-              { icon: <Linkedin className="h-4 w-4" /> }
+              { icon: <Mail className="h-4 w-4" />, href: "mailto:skandakaunda@gmail.com" },
+              { icon: <Github className="h-4 w-4" />, href: "https://github.com/Skandaking" },
+              { icon: <Linkedin className="h-4 w-4" />, href: "https://www.linkedin.com/in/gomezgani-kaunda-32b556244" }
             ].map((item, index) => (
               <Button 
                 key={index}
                 variant="ghost" 
                 size="sm"
+                asChild
                 className="w-8 h-8 p-0 rounded-full bg-zinc-800/50 text-zinc-400 hover:text-white hover:bg-indigo-600/20 border border-zinc-700"
               >
-                {item.icon}
+                <a href={item.href} target="_blank" rel="noopener noreferrer">
+                  {item.icon}
+                </a>
               </Button>
             ))}
           </div>
@@ -208,22 +261,131 @@ export default function Home() {
                 transition={{ duration: 0.4 }}
                 className="text-center py-2 px-4 bg-green-500/10 border border-green-500/30 rounded-lg"
               >
-                <p className="text-sm text-green-400">Thank you! I'll notify you when the portfolio launches.</p>
+                <p className="text-sm text-green-400">Thank you! I&apos;ll notify you when the portfolio launches.</p>
               </motion.div>
             )}
           </motion.div>
           
+          {/* Technologies sliding marquee */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            className="flex flex-wrap justify-center gap-2 max-w-md"
+            className="w-full mt-2 mb-6 overflow-hidden"
           >
-            {["React", "Next.js", "TypeScript", "Tailwind"].map((tech) => (
-              <span key={tech} className="px-3 py-1 rounded-full text-xs bg-zinc-800/50 text-zinc-400 border border-zinc-700/50">
-                {tech}
-              </span>
-            ))}
+            <p className="text-xs text-indigo-400 font-medium mb-2 text-center">Technologies & Skills</p>
+            
+            <div className="relative flex overflow-x-hidden w-screen -ml-4">
+              {/* Sliding marquee - First copy */}
+              <motion.div
+                className="flex space-x-6 py-3 animate-marquee whitespace-nowrap"
+                animate={{
+                  x: [0, -2500],
+                }}
+                transition={{
+                  x: {
+                    repeat: Infinity,
+                    repeatType: "loop",
+                    duration: 40,
+                    ease: "linear",
+                  },
+                }}
+              >
+                {allTechnologies.map((tech, index) => (
+                  <div key={`${tech.name}-1-${index}`} className="flex flex-col items-center justify-center">
+                    <div 
+                      className="w-10 h-10 rounded-md p-1 border border-zinc-700/50 flex items-center justify-center"
+                      style={{ 
+                        backgroundColor: `${tech.color}30`,
+                        boxShadow: `0 0 8px ${tech.color}20`
+                      }}
+                    >
+                      {tech.missing ? (
+                        <div 
+                          className="text-sm font-medium"
+                          style={{ color: tech.color || 'white' }}
+                        >
+                          {tech.name.charAt(0)}
+                        </div>
+                      ) : (
+                        <Image 
+                          src={tech.icon} 
+                          alt={tech.name} 
+                          width={32}
+                          height={32}
+                          className="w-full h-full object-contain"
+                          style={{ filter: `drop-shadow(0 0 2px ${tech.color})` }}
+                          onError={(e) => {
+                            // If image fails to load, replace with fallback
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            target.parentElement?.insertAdjacentHTML('beforeend', 
+                              `<div class="text-sm font-medium" style="color: ${tech.color || 'white'}">${tech.name.charAt(0)}</div>`
+                            );
+                          }}
+                        />
+                      )}
+                    </div>
+                    <span className="text-xs text-zinc-500 mt-1">{tech.name}</span>
+                  </div>
+                ))}
+              </motion.div>
+
+              {/* Sliding marquee - Second copy (ensures continuous loop) */}
+              <motion.div
+                className="flex space-x-6 py-3 animate-marquee whitespace-nowrap absolute top-0"
+                animate={{
+                  x: [2500, 0],
+                }}
+                transition={{
+                  x: {
+                    repeat: Infinity,
+                    repeatType: "loop",
+                    duration: 40,
+                    ease: "linear",
+                  },
+                }}
+              >
+                {allTechnologies.map((tech, index) => (
+                  <div key={`${tech.name}-2-${index}`} className="flex flex-col items-center justify-center">
+                    <div 
+                      className="w-10 h-10 rounded-md p-1 border border-zinc-700/50 flex items-center justify-center"
+                      style={{ 
+                        backgroundColor: `${tech.color}30`,
+                        boxShadow: `0 0 8px ${tech.color}20`
+                      }}
+                    >
+                      {tech.missing ? (
+                        <div 
+                          className="text-sm font-medium"
+                          style={{ color: tech.color || 'white' }}
+                        >
+                          {tech.name.charAt(0)}
+                        </div>
+                      ) : (
+                        <Image 
+                          src={tech.icon} 
+                          alt={tech.name}
+                          width={32}
+                          height={32} 
+                          className="w-full h-full object-contain"
+                          style={{ filter: `drop-shadow(0 0 2px ${tech.color})` }}
+                          onError={(e) => {
+                            // If image fails to load, replace with fallback
+                            const target = e.target as HTMLImageElement;
+                            target.style.display = 'none';
+                            target.parentElement?.insertAdjacentHTML('beforeend', 
+                              `<div class="text-sm font-medium" style="color: ${tech.color || 'white'}">${tech.name.charAt(0)}</div>`
+                            );
+                          }}
+                        />
+                      )}
+                    </div>
+                    <span className="text-xs text-zinc-500 mt-1">{tech.name}</span>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
           </motion.div>
         </div>
         
@@ -233,7 +395,7 @@ export default function Home() {
           transition={{ duration: 0.5, delay: 0.6 }}
           className="text-center py-4 text-zinc-600 text-xs"
         >
-          © 2025 | Developer Portfolio
+          © 2025 | SkandaDev
         </motion.div>
       </div>
     </div>
